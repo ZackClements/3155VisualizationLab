@@ -3,27 +3,16 @@ import plotly.offline as pyo
 import plotly.graph_objs as go
 
 # Load CSV file from Datasets folder
-df = pd.read_csv('../Datasets/CoronavirusTotal.csv')
-
-# Filtering US Cases
-filtered_df = df[df['Country'] == 'US']
+df = pd.read_csv('../Datasets/Olympic2016Rio.csv')
 
 # Removing empty spaces from State column to avoid errors
-filtered_df = filtered_df.apply(lambda x: x.str.strip() if x.dtype == "object" else x)
+df = df.apply(lambda x: x.str.strip() if x.dtype == "object" else x)
 
-# Creating sum of number of cases group by State Column
-new_df = filtered_df.groupby(['State'])['Confirmed'].sum().reset_index()
-
-# Sorting values and select first 20 states
-new_df = new_df.sort_values(by=['Confirmed'], ascending=[False]).head(20)
+df = df.sort_values(by=['Total'], ascending=[False]).head(20).reset_index()
 
 # Preparing data
-data = [go.Bar(x=new_df['State'], y=new_df['Confirmed'])]
-
-# Preparing layout
-layout = go.Layout(title='Corona Virus Confirmed Cases in The US', xaxis_title="States",
-                   yaxis_title="Number of confirmed cases")
-
-# Plot the figure and saving in a html file
+trace1 = go.Bar(x=df['NOC'], y=df['Total'], name='Medals', marker={'color': '#CD7F32'})
+data = [trace1]
+layout = go.Layout(title='Total Medals in 2016 Olympics', xaxis_title='Countries', yaxis_title='Medals')
 fig = go.Figure(data=data, layout=layout)
 pyo.plot(fig, filename='barchart.html')
